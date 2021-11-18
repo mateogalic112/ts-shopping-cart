@@ -25,7 +25,7 @@ const Home = () => {
             <Card>
               <Card.Body>
                 <Card.Title>{product.title}</Card.Title>
-                <Card.Text>{product.price}$</Card.Text>
+                <Card.Text>{product.price}€</Card.Text>
                 <Button
                   className="d-block"
                   variant="primary"

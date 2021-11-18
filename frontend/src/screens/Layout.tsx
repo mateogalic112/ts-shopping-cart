@@ -1,11 +1,12 @@
 import React, { FC } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Container, Row, Col, Nav, Button, Badge } from 'react-bootstrap'
 import { pageLinks } from '../constants/constants'
 import { useCartContext } from '../contexts/cart'
 
 const Layout: FC = ({ children }) => {
-  const { cartItems } = useCartContext()
+  const navigate = useNavigate()
+  const { totalItems } = useCartContext()
 
   return (
     <section>
@@ -24,8 +25,8 @@ const Layout: FC = ({ children }) => {
                 ))}
               </Nav>
 
-              <Button variant="primary">
-                Cart <Badge bg="secondary">{cartItems.length}</Badge>
+              <Button variant="primary" onClick={() => navigate('/cart')}>
+                Cart <Badge bg="secondary">{totalItems}</Badge>
                 <span className="visually-hidden">items in cart</span>
               </Button>
             </Col>

@@ -1,4 +1,5 @@
 import { State, CartItem } from '.'
+import { PromotionCode, promotionCodes } from '../../constants/constants'
 import ActionKind from './actions'
 
 type Action =
@@ -8,6 +9,9 @@ type Action =
       type: ActionKind.updateItemQuantity
       payload: { id: string; quantity: number }
     }
+  | { type: ActionKind.applyPromotionToBasket; payload: PromotionCode }
+  | { type: ActionKind.removePromotionFromBasket; payload: string }
+  | { type: ActionKind.resetPromotionCodeList }
 
 export default function (state: State, action: Action): State {
   switch (action.type) {
@@ -32,6 +36,23 @@ export default function (state: State, action: Action): State {
           }
           return cartItem
         }),
+      }
+    case ActionKind.applyPromotionToBasket:
+      return {
+        ...state,
+        appliedCodes: [...state.appliedCodes, action.payload],
+      }
+    case ActionKind.removePromotionFromBasket:
+      return {
+        ...state,
+        appliedCodes: state.appliedCodes.filter(
+          (appliedCode: PromotionCode) => appliedCode.code !== action.payload,
+        ),
+      }
+    case ActionKind.resetPromotionCodeList:
+      return {
+        ...state,
+        appliedCodes: [],
       }
     default:
       throw new Error('Action not allowed')

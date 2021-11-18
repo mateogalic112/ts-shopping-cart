@@ -5,6 +5,7 @@ import React, {
   useContext,
   useMemo,
 } from 'react'
+import { PromotionCode } from '../../constants/constants'
 import { Product } from '../../models/Product'
 
 import ActionKind from './actions'
@@ -12,17 +13,25 @@ import cartReducer from './reducer'
 
 interface ICartContext {
   cartItems: Array<CartItem>
+  appliedCodes: Array<PromotionCode>
   addItemToCart: (item: CartItem) => void
   removeItemFromCart: (id: string) => void
   updateItemQuantity: (id: string, quantity: number) => void
+  applyPromotionToBasket: (code: PromotionCode) => void
+  removePromotionFromBasket: (code: string) => void
+  totalItems: number
   itemsPrice: number
 }
 
 const initialContext: ICartContext = {
   cartItems: [],
+  appliedCodes: [],
   addItemToCart: () => {},
   removeItemFromCart: () => {},
   updateItemQuantity: () => {},
+  applyPromotionToBasket: () => {},
+  removePromotionFromBasket: () => {},
+  totalItems: 0,
   itemsPrice: 0,
 }
 
@@ -33,11 +42,15 @@ export interface CartItem {
 
 export type State = {
   cartItems: Array<CartItem>
+  appliedCodes: Array<PromotionCode>
 }
 
 const initialState: State = {
   cartItems: localStorage.getItem('cartItems')
     ? JSON.parse(localStorage.getItem('cartItems') as string)
+    : [],
+  appliedCodes: localStorage.getItem('appliedCodes')
+    ? JSON.parse(localStorage.getItem('appliedCodes') as string)
     : [],
 }
 
@@ -52,7 +65,10 @@ export const useCartContext = () => {
 }
 
 export const CartProvider: FC = ({ children }) => {
-  const [{ cartItems }, dispatch] = useReducer(cartReducer, initialState)
+  const [{ cartItems, appliedCodes }, dispatch] = useReducer(
+    cartReducer,
+    initialState,
+  )
 
   const addItemToCart = (item: CartItem) => {
     dispatch({
@@ -72,7 +88,13 @@ export const CartProvider: FC = ({ children }) => {
 
   const updateItemQuantity = (id: string, quantity: number) => {
     if (quantity === 0) {
-      return removeItemFromCart(id)
+      removeItemFromCart(id)
+
+      dispatch({
+        type: ActionKind.resetPromotionCodeList,
+      })
+
+      return
     }
     dispatch({
       type: ActionKind.updateItemQuantity,
@@ -80,26 +102,64 @@ export const CartProvider: FC = ({ children }) => {
     })
   }
 
-  const itemsPrice = useMemo(
-    () =>
-      parseFloat(
-        cartItems
-          .reduce(
-            (acc, cartItem) => acc + cartItem.item.price * cartItem.quantity,
-            0,
-          )
-          .toFixed(2),
-      ),
+  const removePromotionFromBasket = (code: string) => {
+    if (!appliedCodes.some((appliedCode) => appliedCode.code === code)) return
+
+    dispatch({
+      type: ActionKind.removePromotionFromBasket,
+      payload: code,
+    })
+
+    localStorage.setItem('appliedCodes', JSON.stringify(appliedCodes))
+  }
+
+  const totalItems = useMemo(
+    () => cartItems.reduce((acc, cartItem) => acc + cartItem.quantity, 0),
     [cartItems],
   )
+
+  const itemsPrice = useMemo(() => {
+    const price: number = cartItems.reduce(
+      (acc, cartItem) => acc + cartItem.item.price * cartItem.quantity,
+      0,
+    )
+
+    return parseFloat(
+      appliedCodes
+        .reduce((acc: number, item: PromotionCode) => item.action(acc), price)
+        .toFixed(2),
+    )
+  }, [cartItems, appliedCodes])
+
+  const applyPromotionToBasket = (promotionCode: PromotionCode) => {
+    if (
+      appliedCodes.some(
+        (appliedCode) => appliedCode.code === promotionCode.code,
+      )
+    )
+      return
+
+    if (!promotionCode.validation(appliedCodes, itemsPrice)) return
+
+    dispatch({
+      type: ActionKind.applyPromotionToBasket,
+      payload: promotionCode,
+    })
+
+    localStorage.setItem('appliedCodes', JSON.stringify(appliedCodes))
+  }
 
   return (
     <CartContext.Provider
       value={{
         cartItems,
+        appliedCodes,
         addItemToCart,
         removeItemFromCart,
         updateItemQuantity,
+        applyPromotionToBasket,
+        removePromotionFromBasket,
+        totalItems,
         itemsPrice,
       }}
     >
