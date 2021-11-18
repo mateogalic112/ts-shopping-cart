@@ -1,37 +1,41 @@
-const dotenv = require("dotenv");
-const products = require("./data/products.js");
-const Product = require("./models/Product.js");
-const connectDB = require("./config/db.js");
+const dotenv = require('dotenv')
+const products = require('./data/products.js')
+const orders = require('./data/orders.js')
+const Product = require('./models/Product.js')
+const Order = require('./models/Order')
+const connectDB = require('./config/db.js')
 
-dotenv.config();
+dotenv.config()
 
-connectDB();
+connectDB()
 
 const importData = async () => {
   try {
-    await Product.deleteMany();
-    console.log("cleared Database ✅");
+    await Product.deleteMany()
+    await Order.deleteMany()
+    console.log('cleared Database ✅')
 
-    console.log("insert Products...");
-    await Product.insertMany(products);
-    console.log("created Products ✅");
+    await Product.insertMany(products)
+    await Order.insertMany(orders)
+    console.log('created Rows ✅')
 
-    process.exit();
+    process.exit()
   } catch (error) {
-    console.error(`oh no -> ${error}`);
-    process.exit(1);
+    console.error(`oh no -> ${error}`)
+    process.exit(1)
   }
-};
+}
 
 const destroyData = async () => {
   try {
-    await Product.deleteMany();
-    console.log("cleared Database 🧨✅");
-    process.exit();
+    await Product.deleteMany()
+    await Order.deleteMany()
+    console.log('cleared Database 🧨✅')
+    process.exit()
   } catch (error) {
-    console.error(`oh no -> ${error}`);
-    process.exit(1);
+    console.error(`oh no -> ${error}`)
+    process.exit(1)
   }
-};
+}
 
-process.argv[2] === "-d" ? destroyData() : importData();
+process.argv[2] === '-d' ? destroyData() : importData()
