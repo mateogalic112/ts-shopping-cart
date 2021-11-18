@@ -1,20 +1,26 @@
-import React from "react";
-//import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap/dist/css/bootstrap.min.css'
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from 'react-router-dom'
+import { CartProvider } from './contexts/cart'
+import Cart from './screens/Cart'
 
-import Home from "./screens/Home";
+import Home from './screens/Home'
+import Layout from './screens/Layout'
 
 function App() {
   return (
     <div className="App">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        {/* <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} /> */}
-      </Routes>
+      <CartProvider>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/cart" element={<Cart />} />
+            {/*<Route path="/checkout" element={<Checkout />} /> */}
+          </Routes>
+        </Layout>
+      </CartProvider>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
