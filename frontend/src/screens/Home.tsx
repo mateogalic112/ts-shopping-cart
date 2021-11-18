@@ -1,5 +1,6 @@
 import React from 'react'
 import { Card, Button, Container, Col, Row } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import useSWR from 'swr'
 import { fetcher } from '../api/fetcher'
 import { useCartContext } from '../contexts/cart'
@@ -9,6 +10,8 @@ const Home = () => {
   const { data: products } = useSWR<Product[]>('/api/products', fetcher)
 
   const { cartItems, addItemToCart } = useCartContext()
+
+  const navigate = useNavigate()
 
   if (!products) return <p>Loading...</p>
 
@@ -42,6 +45,17 @@ const Home = () => {
             </Card>
           </Col>
         ))}
+      </Row>
+      <Row className="pt-2">
+        <Col>
+          <Button
+            variant="primary"
+            className="mb-4"
+            onClick={() => navigate('/cart')}
+          >
+            View cart
+          </Button>
+        </Col>
       </Row>
     </Container>
   )

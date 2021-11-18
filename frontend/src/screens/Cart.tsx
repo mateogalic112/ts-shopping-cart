@@ -1,5 +1,6 @@
 import React from 'react'
 import { Container, Row, Col, Card, Button, ListGroup } from 'react-bootstrap'
+import { useNavigate } from 'react-router'
 import PromotionCodeForm from '../components/PromotionCodeForm'
 import PromotionCodeList from '../components/PromotionCodeList'
 import { useCartContext } from '../contexts/cart'
@@ -9,11 +10,13 @@ const Cart = () => {
     cartItems,
     updateItemQuantity,
     itemsPrice,
-    appliedCodes,
+    totalItems,
   } = useCartContext()
 
+  const navigate = useNavigate()
+
   return (
-    <Container>
+    <Container className="pb-4">
       <Row>
         <Col className="mt-4 mb-2">
           <h2>Cart overview</h2>
@@ -50,19 +53,34 @@ const Cart = () => {
           </Col>
         ))}
       </Row>
-      <Row>
-        <Col>
-          <PromotionCodeList />
+      {totalItems > 0 && (
+        <Row>
+          <Col>
+            <PromotionCodeList />
 
-          <PromotionCodeForm />
-        </Col>
-      </Row>
+            <PromotionCodeForm />
+          </Col>
+        </Row>
+      )}
       <Row>
         <Col>
           <h4 className="pt-4">Items price:</h4>
           <h2>{itemsPrice}€</h2>
         </Col>
       </Row>
+      {totalItems > 0 && (
+        <Row className="pt-2">
+          <Col>
+            <Button
+              variant="primary"
+              className="mb-4"
+              onClick={() => navigate('/checkout')}
+            >
+              Proceed to checkout
+            </Button>
+          </Col>
+        </Row>
+      )}
     </Container>
   )
 }
