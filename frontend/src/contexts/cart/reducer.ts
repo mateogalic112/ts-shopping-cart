@@ -1,5 +1,5 @@
 import { State, CartItem } from '.'
-import { PromotionCode, promotionCodes } from '../../constants/constants'
+import { PromotionCode } from '../../constants/constants'
 import ActionKind from './actions'
 
 type Action =

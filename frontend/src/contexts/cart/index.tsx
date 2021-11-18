@@ -46,12 +46,8 @@ export type State = {
 }
 
 const initialState: State = {
-  cartItems: localStorage.getItem('cartItems')
-    ? JSON.parse(localStorage.getItem('cartItems') as string)
-    : [],
-  appliedCodes: localStorage.getItem('appliedCodes')
-    ? JSON.parse(localStorage.getItem('appliedCodes') as string)
-    : [],
+  cartItems: [],
+  appliedCodes: [],
 }
 
 const CartContext = createContext<ICartContext>(initialContext)
@@ -75,7 +71,6 @@ export const CartProvider: FC = ({ children }) => {
       type: ActionKind.addItemToCart,
       payload: item,
     })
-    localStorage.setItem('cartItems', JSON.stringify(cartItems))
   }
 
   const removeItemFromCart = (id: string) => {
@@ -83,7 +78,6 @@ export const CartProvider: FC = ({ children }) => {
       type: ActionKind.removeItemFromCart,
       payload: id,
     })
-    localStorage.setItem('cartItems', JSON.stringify(cartItems))
   }
 
   const updateItemQuantity = (id: string, quantity: number) => {
@@ -109,8 +103,6 @@ export const CartProvider: FC = ({ children }) => {
       type: ActionKind.removePromotionFromBasket,
       payload: code,
     })
-
-    localStorage.setItem('appliedCodes', JSON.stringify(appliedCodes))
   }
 
   const totalItems = useMemo(
@@ -145,8 +137,6 @@ export const CartProvider: FC = ({ children }) => {
       type: ActionKind.applyPromotionToBasket,
       payload: promotionCode,
     })
-
-    localStorage.setItem('appliedCodes', JSON.stringify(appliedCodes))
   }
 
   return (
