@@ -27,7 +27,7 @@ const Home = () => {
           <Col className="my-4" xs={12} md={6} lg={4} key={product._id}>
             <Card>
               <Card.Body>
-                <Card.Title>{product.title}</Card.Title>
+                <Card.Title as="h5">{product.title}</Card.Title>
                 <Card.Text>{product.price}€</Card.Text>
                 <Button
                   className="d-block"
