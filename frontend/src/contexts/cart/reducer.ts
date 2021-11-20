@@ -12,6 +12,7 @@ type Action =
   | { type: ActionKind.applyPromotionToBasket; payload: PromotionCode }
   | { type: ActionKind.removePromotionFromBasket; payload: string }
   | { type: ActionKind.resetPromotionCodeList }
+  | { type: ActionKind.resetCart }
 
 export default function (state: State, action: Action): State {
   switch (action.type) {
@@ -53,6 +54,11 @@ export default function (state: State, action: Action): State {
       return {
         ...state,
         appliedCodes: [],
+      }
+    case ActionKind.resetCart:
+      return {
+        ...state,
+        cartItems: [],
       }
     default:
       throw new Error('Action not allowed')

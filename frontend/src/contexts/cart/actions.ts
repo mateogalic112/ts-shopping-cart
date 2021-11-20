@@ -1,6 +1,7 @@
 enum ActionKind {
   addItemToCart = 'ADD_ITEM_TO_CART',
   removeItemFromCart = 'REMOVE_ITEM_FROM_CART',
+  resetCart = 'RESET_CART',
   updateItemQuantity = 'UPDATE_ITEM_QUANTITY',
   applyPromotionToBasket = 'APPLY_PROMOTION_TO_BASKET',
   resetPromotionCodeList = 'RESET_PROMOTION_CODE_LIST',

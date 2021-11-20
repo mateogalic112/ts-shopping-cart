@@ -5,10 +5,11 @@ const Order = require('../models/Order')
 // @route   POST /api/orders
 // @access  Public
 const createOrder = asyncHandler(async (req, res) => {
-  const { email, address, card, cartItems, totalPrice } = req.body
+  console.log(req.body)
+  const { customer, cartItems, totalPrice } = req.body
 
   const order = await Order.create({
-    customer: { email, address, card },
+    customer,
     cartItems,
     totalPrice,
   })

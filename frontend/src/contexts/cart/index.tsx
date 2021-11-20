@@ -16,9 +16,11 @@ interface ICartContext {
   appliedCodes: Array<PromotionCode>
   addItemToCart: (item: CartItem) => void
   removeItemFromCart: (id: string) => void
+  resetCart: () => void
   updateItemQuantity: (id: string, quantity: number) => void
   applyPromotionToBasket: (code: PromotionCode) => void
   removePromotionFromBasket: (code: string) => void
+  resetPromotionCodeList: () => void
   totalItems: number
   itemsPrice: number
 }
@@ -28,9 +30,11 @@ const initialContext: ICartContext = {
   appliedCodes: [],
   addItemToCart: () => {},
   removeItemFromCart: () => {},
+  resetCart: () => {},
   updateItemQuantity: () => {},
   applyPromotionToBasket: () => {},
   removePromotionFromBasket: () => {},
+  resetPromotionCodeList: () => {},
   totalItems: 0,
   itemsPrice: 0,
 }
@@ -80,6 +84,12 @@ export const CartProvider: FC = ({ children }) => {
     })
   }
 
+  const resetCart = () => {
+    dispatch({
+      type: ActionKind.resetCart,
+    })
+  }
+
   const updateItemQuantity = (id: string, quantity: number) => {
     if (quantity === 0) {
       removeItemFromCart(id)
@@ -102,6 +112,12 @@ export const CartProvider: FC = ({ children }) => {
     dispatch({
       type: ActionKind.removePromotionFromBasket,
       payload: code,
+    })
+  }
+
+  const resetPromotionCodeList = () => {
+    dispatch({
+      type: ActionKind.resetPromotionCodeList,
     })
   }
 
@@ -146,9 +162,11 @@ export const CartProvider: FC = ({ children }) => {
         appliedCodes,
         addItemToCart,
         removeItemFromCart,
+        resetCart,
         updateItemQuantity,
         applyPromotionToBasket,
         removePromotionFromBasket,
+        resetPromotionCodeList,
         totalItems,
         itemsPrice,
       }}
