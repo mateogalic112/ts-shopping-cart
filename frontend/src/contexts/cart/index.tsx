@@ -147,7 +147,7 @@ export const CartProvider: FC = ({ children }) => {
     )
       return
 
-    if (!promotionCode.validation(appliedCodes, itemsPrice)) return
+    if (promotionCode.validation(appliedCodes, itemsPrice) !== '') return
 
     dispatch({
       type: ActionKind.applyPromotionToBasket,
