@@ -26,7 +26,10 @@ const Layout: FC = ({ children }) => {
               </Nav>
 
               <Button variant="primary" onClick={() => navigate('/cart')}>
-                Cart <Badge bg="secondary">{totalItems}</Badge>
+                Cart{' '}
+                <Badge bg="secondary" role="total">
+                  {totalItems}
+                </Badge>
                 <span className="visually-hidden">items in cart</span>
               </Button>
             </Col>
