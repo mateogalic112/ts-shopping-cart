@@ -7,13 +7,33 @@ import { useCartContext } from '../contexts/cart'
 import { Product } from '../models/Product'
 
 const Home = () => {
-  const { data: products } = useSWR<Product[]>('/api/products', fetcher)
+  const { data: products, error } = useSWR<Product[]>('/api/products', fetcher)
 
   const { cartItems, addItemToCart } = useCartContext()
 
   const navigate = useNavigate()
 
-  if (!products) return <p>Loading...</p>
+  if (!products && !error)
+    return (
+      <Container>
+        <Row>
+          <Col className="mt-4 mb-2">
+            <h2>Loading...</h2>
+          </Col>
+        </Row>
+      </Container>
+    )
+
+  if (error)
+    return (
+      <Container>
+        <Row>
+          <Col className="mt-4 mb-2">
+            <h2 style={{ color: 'red' }}>Error fetching products</h2>
+          </Col>
+        </Row>
+      </Container>
+    )
 
   return (
     <Container>
@@ -23,7 +43,7 @@ const Home = () => {
         </Col>
       </Row>
       <Row>
-        {products.map((product) => (
+        {products?.map((product) => (
           <Col className="my-4" xs={12} md={6} lg={4} key={product._id}>
             <Card>
               <Card.Body>
