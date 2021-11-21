@@ -54,7 +54,7 @@ const initialState: State = {
   appliedCodes: [],
 }
 
-const CartContext = createContext<ICartContext>(initialContext)
+export const CartContext = createContext<ICartContext>(initialContext)
 
 export const useCartContext = () => {
   const context = useContext(CartContext)

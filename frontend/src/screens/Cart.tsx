@@ -27,7 +27,7 @@ const Cart = () => {
           <Col xs={12} className="my-1" key={cartItem.item._id}>
             <Card>
               <Card.Body>
-                <Card.Title>{cartItem.item.title}</Card.Title>
+                <Card.Title as="h5">{cartItem.item.title}</Card.Title>
                 <Card.Text>{cartItem.item.price}€</Card.Text>
                 <Button
                   variant="light"
@@ -38,7 +38,9 @@ const Cart = () => {
                 >
                   -
                 </Button>
-                <span className="px-4">{cartItem.quantity}</span>
+                <span className="px-4" role="quantity">
+                  {cartItem.quantity}
+                </span>
                 <Button
                   variant="light"
                   size={'sm'}
@@ -65,7 +67,7 @@ const Cart = () => {
       <Row>
         <Col>
           <h4 className="pt-4">Items price:</h4>
-          <h2>{itemsPrice}€</h2>
+          <h2 role="price">{itemsPrice}€</h2>
         </Col>
       </Row>
       {totalItems > 0 && (
