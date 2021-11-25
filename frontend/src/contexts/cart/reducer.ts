@@ -13,6 +13,10 @@ type Action =
   | { type: ActionKind.removePromotionFromBasket; payload: string }
   | { type: ActionKind.resetPromotionCodeList }
   | { type: ActionKind.resetCart }
+  | {
+      type: ActionKind.updateCustomerData
+      payload: React.ChangeEvent<HTMLInputElement>
+    }
 
 export default function (state: State, action: Action): State {
   switch (action.type) {
@@ -37,6 +41,14 @@ export default function (state: State, action: Action): State {
           }
           return cartItem
         }),
+      }
+    case ActionKind.updateCustomerData:
+      return {
+        ...state,
+        customer: {
+          ...state.customer,
+          [action.payload.target.name]: action.payload.target.value,
+        },
       }
     case ActionKind.applyPromotionToBasket:
       return {

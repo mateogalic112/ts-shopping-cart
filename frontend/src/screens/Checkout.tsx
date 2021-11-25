@@ -5,37 +5,17 @@ import mutate from '../api/mutate'
 import SiteModal from '../components/Modal'
 import { useCartContext } from '../contexts/cart'
 import { APIOrder } from '../models/APIOrder'
-import { Customer } from '../models/Customer'
 
 const Checkout: FC = () => {
   const [showModal, setShowModal] = useState(false)
 
-  const {
-    cartItems,
-    itemsPrice,
-    resetCart,
-    resetPromotionCodeList,
-  } = useCartContext()
-
-  const [values, setValues] = useState<Customer>({
-    email: '',
-    address: '',
-    card: undefined,
-  })
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [e.target.name]: e.target.value })
-  }
+  const { cartItems, itemsPrice, customer, updateCustomer } = useCartContext()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const order: APIOrder = {
-      customer: {
-        email: values.email,
-        address: values.address,
-        card: values.card as number,
-      },
+      customer,
       cartItems: cartItems.map((cartItem) => ({
         title: cartItem.item.title,
         price: cartItem.item.price,
@@ -47,8 +27,6 @@ const Checkout: FC = () => {
     await mutate(`${BASE_URL}/api/orders`, 'POST', order)
       .then((res) => res.json())
       .then(() => {
-        resetCart()
-        resetPromotionCodeList()
         setShowModal(true)
       })
   }
@@ -65,10 +43,11 @@ const Checkout: FC = () => {
                 <Form.Label>Email address</Form.Label>
                 <Form.Control
                   name="email"
-                  onChange={handleChange}
+                  onChange={updateCustomer}
                   required
                   type="email"
                   placeholder="Enter email"
+                  value={customer.email}
                 />
               </Form.Group>
 
@@ -76,10 +55,11 @@ const Checkout: FC = () => {
                 <Form.Label>Address</Form.Label>
                 <Form.Control
                   name="address"
-                  onChange={handleChange}
+                  onChange={updateCustomer}
                   type="text"
                   required
                   placeholder="1234 Main St"
+                  value={customer.address}
                 />
               </Form.Group>
 
@@ -88,10 +68,11 @@ const Checkout: FC = () => {
                 <Form.Control
                   name="card"
                   required
-                  onChange={handleChange}
+                  onChange={updateCustomer}
                   type="tel"
                   pattern="[0-9\s]{13,19}"
                   placeholder="xxxx xxxx xxxx xxxx"
+                  value={customer.card || ''}
                 />
               </Form.Group>
 

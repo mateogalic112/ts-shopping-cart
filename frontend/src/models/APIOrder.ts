@@ -1,9 +1,7 @@
+import { ICustomer } from '../contexts/cart'
+
 export interface APIOrder {
-  customer: {
-    email: string
-    address: string
-    card: number
-  }
+  customer: ICustomer
   cartItems: {
     title: string
     price: number

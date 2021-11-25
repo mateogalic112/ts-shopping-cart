@@ -1,3 +1,5 @@
+import { CartItem } from '../contexts/cart'
+
 export const pageLinks = {
   '/': 'Home',
   '/cart': 'Cart',
@@ -17,6 +19,33 @@ export const quantityDiscount: Record<string, IQuantityDiscount> = {
     quantityForDiscount: 2,
     discountAmount: 5.0,
   },
+}
+
+type Deducationfactor = {
+  factor: number
+  amount: number
+}
+
+export const deducationFactor = (cartItem: CartItem): Deducationfactor => {
+  if (quantityDiscount[cartItem.item._id]) {
+    return {
+      factor: Math.floor(
+        cartItem.quantity /
+          quantityDiscount[cartItem.item._id].quantityForDiscount,
+      ),
+      amount: quantityDiscount[cartItem.item._id].discountAmount,
+    }
+  }
+
+  return {
+    factor: 0,
+    amount: 0,
+  }
+}
+
+export const applyQuantityPromotion = (cartItem: CartItem): number => {
+  const { factor, amount } = deducationFactor(cartItem)
+  return cartItem.quantity * cartItem.item.price - factor * amount
 }
 
 export interface PromotionCode {

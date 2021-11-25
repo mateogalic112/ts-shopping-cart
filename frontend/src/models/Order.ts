@@ -1,9 +1,8 @@
-import { CartItem } from '../contexts/cart'
-import { Customer } from './Customer'
+import { CartItem, ICustomer } from '../contexts/cart'
 
 export interface Order {
   _id?: string
-  customer: Customer
+  customer: ICustomer
   cartItems: CartItem[]
   totalPrice: number
 }

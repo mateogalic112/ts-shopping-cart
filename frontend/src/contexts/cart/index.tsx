@@ -1,31 +1,26 @@
 import { createContext, FC, useReducer, useContext, useMemo } from 'react'
-import { PromotionCode, quantityDiscount } from '../../constants/constants'
+import {
+  applyQuantityPromotion,
+  PromotionCode,
+} from '../../constants/constants'
 import { Product } from '../../models/Product'
 
 import ActionKind from './actions'
 import cartReducer from './reducer'
 
-const applyQuantityPromotion = (cartItem: CartItem): number => {
-  if (quantityDiscount[cartItem.item._id]) {
-    const deductFactor = Math.floor(
-      cartItem.quantity /
-        quantityDiscount[cartItem.item._id].quantityForDiscount,
-    )
-
-    return (
-      cartItem.quantity * cartItem.item.price -
-      deductFactor * quantityDiscount[cartItem.item._id].discountAmount
-    )
-  }
-
-  return cartItem.quantity * cartItem.item.price
+export interface ICustomer {
+  email: string
+  address: string
+  card: number | null
 }
 
 interface ICartContext {
   cartItems: Array<CartItem>
   appliedCodes: Array<PromotionCode>
+  customer: ICustomer
   addItemToCart: (item: CartItem) => void
   removeItemFromCart: (id: string) => void
+  updateCustomer: (e: React.ChangeEvent<HTMLInputElement>) => void
   resetCart: () => void
   updateItemQuantity: (id: string, quantity: number) => void
   applyPromotionToBasket: (code: PromotionCode) => void
@@ -38,8 +33,14 @@ interface ICartContext {
 const initialContext: ICartContext = {
   cartItems: [],
   appliedCodes: [],
+  customer: {
+    email: '',
+    address: '',
+    card: null,
+  },
   addItemToCart: () => {},
   removeItemFromCart: () => {},
+  updateCustomer: () => {},
   resetCart: () => {},
   updateItemQuantity: () => {},
   applyPromotionToBasket: () => {},
@@ -57,11 +58,17 @@ export interface CartItem {
 export type State = {
   cartItems: Array<CartItem>
   appliedCodes: Array<PromotionCode>
+  customer: ICustomer
 }
 
 const initialState: State = {
   cartItems: [],
   appliedCodes: [],
+  customer: {
+    email: '',
+    address: '',
+    card: null,
+  },
 }
 
 export const CartContext = createContext<ICartContext>(initialContext)
@@ -75,14 +82,12 @@ export const useCartContext = () => {
 }
 
 export const CartProvider: FC = ({ children }) => {
-  const [{ cartItems, appliedCodes }, dispatch] = useReducer(
+  const [{ cartItems, appliedCodes, customer }, dispatch] = useReducer(
     cartReducer,
     initialState,
   )
 
   const addItemToCart = (item: CartItem) => {
-    console.log(cartItems)
-
     dispatch({
       type: ActionKind.addItemToCart,
       payload: item,
@@ -93,6 +98,13 @@ export const CartProvider: FC = ({ children }) => {
     dispatch({
       type: ActionKind.removeItemFromCart,
       payload: id,
+    })
+  }
+
+  const updateCustomer = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch({
+      type: ActionKind.updateCustomerData,
+      payload: e,
     })
   }
 
@@ -175,10 +187,12 @@ export const CartProvider: FC = ({ children }) => {
       value={{
         cartItems,
         appliedCodes,
+        customer,
         addItemToCart,
         removeItemFromCart,
         resetCart,
         updateItemQuantity,
+        updateCustomer,
         applyPromotionToBasket,
         removePromotionFromBasket,
         resetPromotionCodeList,
