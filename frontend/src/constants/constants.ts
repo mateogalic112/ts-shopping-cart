@@ -3,6 +3,22 @@ export const pageLinks = {
   '/cart': 'Cart',
 }
 
+export interface IQuantityDiscount {
+  quantityForDiscount: number
+  discountAmount: number
+}
+
+export const quantityDiscount: Record<string, IQuantityDiscount> = {
+  '619fd21ffc105839e1c9ee49': {
+    quantityForDiscount: 3,
+    discountAmount: 10.0,
+  },
+  '619fd21ffc105839e1c9ee4b': {
+    quantityForDiscount: 2,
+    discountAmount: 5.0,
+  },
+}
+
 export interface PromotionCode {
   code: '20%OFF' | '5%OFF' | '20EUROFF'
   action: (price: number) => number

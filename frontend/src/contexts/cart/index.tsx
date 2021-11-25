@@ -1,15 +1,25 @@
-import React, {
-  createContext,
-  FC,
-  useReducer,
-  useContext,
-  useMemo,
-} from 'react'
-import { PromotionCode } from '../../constants/constants'
+import { createContext, FC, useReducer, useContext, useMemo } from 'react'
+import { PromotionCode, quantityDiscount } from '../../constants/constants'
 import { Product } from '../../models/Product'
 
 import ActionKind from './actions'
 import cartReducer from './reducer'
+
+const applyQuantityPromotion = (cartItem: CartItem): number => {
+  if (quantityDiscount[cartItem.item._id]) {
+    const deductFactor = Math.floor(
+      cartItem.quantity /
+        quantityDiscount[cartItem.item._id].quantityForDiscount,
+    )
+
+    return (
+      cartItem.quantity * cartItem.item.price -
+      deductFactor * quantityDiscount[cartItem.item._id].discountAmount
+    )
+  }
+
+  return cartItem.quantity * cartItem.item.price
+}
 
 interface ICartContext {
   cartItems: Array<CartItem>
@@ -71,6 +81,8 @@ export const CartProvider: FC = ({ children }) => {
   )
 
   const addItemToCart = (item: CartItem) => {
+    console.log(cartItems)
+
     dispatch({
       type: ActionKind.addItemToCart,
       payload: item,
@@ -128,12 +140,15 @@ export const CartProvider: FC = ({ children }) => {
 
   const itemsPrice = useMemo(() => {
     const price: number = cartItems.reduce(
-      (acc, cartItem) => acc + cartItem.item.price * cartItem.quantity,
+      (acc, cartItem) => acc + applyQuantityPromotion(cartItem),
       0,
     )
 
     return parseFloat(
       appliedCodes
+        .sort(
+          (a, b) => Number(a.code.includes('%')) - Number(b.code.includes('%')),
+        )
         .reduce((acc: number, item: PromotionCode) => item.action(acc), price)
         .toFixed(2),
     )
