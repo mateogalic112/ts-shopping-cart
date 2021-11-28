@@ -66,14 +66,23 @@ const SiteModal: FC<ModalProps> = ({ setShow, show }) => {
                     <td>{cartItem.quantity}</td>
                     <td>{cartItem.item.price}€</td>
                     <td>
-                      {amount * factor -
-                        factor *
-                          quantityDiscount[cartItem.item._id]
-                            .quantityForDiscount *
-                          0.01}
+                      {parseFloat(
+                        (
+                          amount * factor -
+                          factor *
+                            quantityDiscount[cartItem.item._id]
+                              .quantityForDiscount *
+                            0.01
+                        ).toString(),
+                      ).toFixed(2)}
                       €
                     </td>
-                    <td>{applyQuantityPromotion(cartItem)}€</td>
+                    <td>
+                      {parseFloat(
+                        applyQuantityPromotion(cartItem).toString(),
+                      ).toFixed(2)}
+                      €
+                    </td>
                   </tr>
                 )
               })}
@@ -99,7 +108,7 @@ const SiteModal: FC<ModalProps> = ({ setShow, show }) => {
 
           <div className="d-flex justify-content-between">
             <h5>Total: </h5>
-            <h5>{itemsPrice}€</h5>
+            <h5>{parseFloat(itemsPrice.toString()).toFixed(2)}€</h5>
           </div>
         </Modal.Body>
 

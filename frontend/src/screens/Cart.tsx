@@ -67,7 +67,7 @@ const Cart = () => {
       <Row>
         <Col>
           <h4 className="pt-4">Items price:</h4>
-          <h2 role="price">{itemsPrice}€</h2>
+          <h2 role="price">{parseFloat(itemsPrice.toString()).toFixed(2)}€</h2>
         </Col>
       </Row>
       {totalItems > 0 && (
