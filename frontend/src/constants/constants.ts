@@ -45,6 +45,13 @@ export const deducationFactor = (cartItem: CartItem): Deducationfactor => {
 
 export const applyQuantityPromotion = (cartItem: CartItem): number => {
   const { factor, amount } = deducationFactor(cartItem)
+  if (factor) {
+    return (
+      cartItem.quantity * cartItem.item.price -
+      factor * amount +
+      factor * quantityDiscount[cartItem.item._id].quantityForDiscount * 0.01
+    )
+  }
   return cartItem.quantity * cartItem.item.price - factor * amount
 }
 

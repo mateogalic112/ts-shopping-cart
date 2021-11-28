@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router'
 import {
   applyQuantityPromotion,
   deducationFactor,
+  quantityDiscount,
 } from '../constants/constants'
 import { useCartContext } from '../contexts/cart'
 
@@ -64,7 +65,14 @@ const SiteModal: FC<ModalProps> = ({ setShow, show }) => {
                     <td>{cartItem.item.title}</td>
                     <td>{cartItem.quantity}</td>
                     <td>{cartItem.item.price}€</td>
-                    <td>{amount * factor}€</td>
+                    <td>
+                      {amount * factor -
+                        factor *
+                          quantityDiscount[cartItem.item._id]
+                            .quantityForDiscount *
+                          0.01}
+                      €
+                    </td>
                     <td>{applyQuantityPromotion(cartItem)}€</td>
                   </tr>
                 )
